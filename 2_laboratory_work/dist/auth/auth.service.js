@@ -9,6 +9,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 let AuthService = class AuthService {
+    users = [
+        {
+            login: "test@test.local",
+            password: "testPwd!23",
+        },
+        {
+            login: "ivan@test.local",
+            password: "qwqrty1234",
+        },
+    ];
+    login(login, password) {
+        const user = this.users.find((user) => user.login === login);
+        if (!user) {
+            throw new common_1.UnauthorizedException("Неверный логин или пароль");
+        }
+        if (user.password === password) {
+            return user;
+        }
+        else {
+            throw new common_1.UnauthorizedException("Неверный логин или пароль");
+        }
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([

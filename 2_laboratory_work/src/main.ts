@@ -1,17 +1,21 @@
-import { Body, Controller, Post } from "@nestjs/common";
-import { LoginDto } from "./dto/login.dto";
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-@Controller("auth")
-export class AuthController {
-  @Post("login")
-  public login(@Body() dto: LoginDto) {
-    console.log("Call login endpoint", dto);
-    return { message: "ok" };
-  }
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
 
-  @Post("register")
-  public register(@Body() dto) {
-    console.log("Call login endpoint", dto);
-    return { message: "ok" };
-  }
+  const config = new DocumentBuilder()
+    .setTitle('API для лабораторных')
+    .setDescription("Описание API для лабораторных работ по предмету 'Введение в профессию'")
+    .setVersion('1.0')
+    .addTag('auth')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
+  await app.listen(3000);
 }
+
+bootstrap();
