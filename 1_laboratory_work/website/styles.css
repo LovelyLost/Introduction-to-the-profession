@@ -14,16 +14,43 @@
   border-radius: 16px;
 }
 
-button {
-  font-family: "Open+Sans", sans-serif;
-  font-size: 24px;
+.hidden {
+  display: none;
+}
+
+h2 {
+  font-family: "Open Sans", sans-serif;
+  font-size: 28px;
+  margin: 8px 0 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.radio-group {
+  display: flex;
+  gap: 16px;
   margin: 4px 0;
+}
+
+.radio-group label {
+  font-family: "Open Sans", sans-serif;
+  font-size: 24px;
+  font-weight: 200;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+button {
+  font-family: "Open Sans", sans-serif;
+  font-size: 24px;
+  margin: 8px 0;
   padding: 8px;
   cursor: pointer;
   color: #ffffff;
   background: #72a57c;
   border-radius: 20px;
-   border: 0;
+  border: 0;
 }
 
 button:hover {
@@ -32,7 +59,7 @@ button:hover {
 }
 
 input {
-  font-family: "Open+Sans", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 24px;
   margin: 4px 0;
   padding: 8px;
