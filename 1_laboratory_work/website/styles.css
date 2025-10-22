@@ -26,6 +26,10 @@ button {
    border: 0;
 }
 
+button:hover {
+  background: #72a57c;
+}
+
 input {
   font-family: "Open+Sans", sans-serif;
   font-size: 24px;
