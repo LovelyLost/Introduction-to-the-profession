@@ -12,11 +12,15 @@
 }
 
 button {
-  font-family: "Rubik", sans-serif;
+  font-family: "Open+Sans", sans-serif;
   font-size: 24px;
+  margin: 4px 0;
+  padding: 8px;
 }
 
 input {
-  font-family: "Rubik", sans-serif;
+  font-family: "Open+Sans", sans-serif;
   font-size: 24px;
+  margin: 4px 0;
+  padding: 8px;
 }
