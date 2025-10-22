@@ -13,11 +13,26 @@
   <body>
     <div class="form-container">
       <div class="form">
+        <h2>Форма регистрации</h2>
         <input placeholder="Имя" />
         <input placeholder="Фамилия" />
         <input placeholder="E-mail" />
         <input type="password" placeholder="Пароль" />
+        <div class="radio-group">
+          <label><input type="radio" name="gender" value="male" /> Мужской</label>
+          <label><input type="radio" name="gender" value="female" /> Женский</label>
+        </div>
+        <input type="number" placeholder="Возраст" min="1" max="120" />
         <button>Зарегистрироваться</button>
+        <button class="login-toggle">Войти</button>
+      </div>
+
+      <div class="form login-form hidden">
+        <h2>Вход</h2>
+        <input placeholder="E-mail" />
+        <input type="password" placeholder="Пароль" />
+        <button>Войти</button>
+        <button class="register-toggle">Зарегистрироваться</button>
       </div>
     </div>
   </body>
