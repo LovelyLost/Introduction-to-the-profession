@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Форма регистрации</title>
+    <link rel="icon" href="./icon.svg" />
+    <style>
+      body {
+        background: #c7efcf;
+        margin: 0;
+        padding: 20px;
+      }
+      .message {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+        text-align: center;
+        font-family: "Open Sans", sans-serif;
+      }
+      .success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+ 
+      <div class="form" id="registerForm">
+        <h2>Форма регистрации</h2>
+        <input id="regFirstName" placeholder="Имя" />
+        <input id="regLastName" placeholder="Фамилия" />
+        <input id="regEmail" placeholder="E-mail" type="email" />
+        <input id="regPassword" type="password" placeholder="Пароль" />
+        <div class="radio-group">
+          <label><input type="radio" name="gender" value="male" /> Мужской</label>
+          <label><input type="radio" name="gender" value="female" /> Женский</label>
+        </div>
+        <input id="regAge" type="number" placeholder="Возраст" min="1" max="120" />
+        <button onclick="register()">Зарегистрироваться</button>
+        <button class="login-toggle" onclick="showLogin()">Войти</button>
+        <div id="registerMessage"></div>
+      </div>
+
+      <div class="form login-form hidden" id="loginForm">
+        <h2>Вход</h2>
+        <input id="loginEmail" placeholder="E-mail" type="email" />
+        <input id="loginPassword" type="password" placeholder="Пароль" />
+        <button onclick="login()">Войти</button>
+        <button class="register-toggle" onclick="showRegister()">Зарегистрироваться</button>
+        <div id="loginMessage"></div>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE = 'http://localhost:3000/auth';
+
+   
+      function showLogin() {
+        document.getElementById('registerForm').classList.add('hidden');
+        document.getElementById('loginForm').classList.remove('hidden');
+        clearMessages();
+      }
+
+      function showRegister() {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerForm').classList.remove('hidden');
+        clearMessages();
+      }
+
+      function clearMessages() {
+        document.getElementById('registerMessage').innerHTML = '';
+        document.getElementById('loginMessage').innerHTML = '';
+      }
+
+      function showMessage(elementId, message, isSuccess = true) {
+        const element = document.getElementById(elementId);
+        element.innerHTML = message;
+        element.className = isSuccess ? 'message success' : 'message error';
+      }
+
+
+      async function register() {
+        const firstName = document.getElementById('regFirstName').value;
+        const lastName = document.getElementById('regLastName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const age = document.getElementById('regAge').value;
+        
+
+        const genderRadio = document.querySelector('input[name="gender"]:checked');
+        const gender = genderRadio ? genderRadio.value : '';
+
+        if (!firstName || !lastName || !email || !password || !gender || !age) {
+          showMessage('registerMessage', 'Пожалуйста, заполните все поля', false);
+          return;
+        }
+
+        if (password.length < 8) {
+          showMessage('registerMessage', 'Пароль должен содержать минимум 8 символов', false);
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE}/register`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              firstName,
+              lastName,
+              email,
+              password,
+              gender,
+              age: parseInt(age)
+            })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage('registerMessage', `Регистрация успешна! Добро пожаловать, ${data.user.firstName}!`);
+
+            document.getElementById('regFirstName').value = '';
+            document.getElementById('regLastName').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+            document.getElementById('regAge').value = '';
+            if (genderRadio) genderRadio.checked = false;
+          } else {
+            showMessage('registerMessage', data.message || 'Ошибка регистрации', false);
+          }
+        } catch (error) {
+          showMessage('registerMessage', 'Ошибка соединения с сервером', false);
+          console.error('Registration error:', error);
+        }
+      }
+
+
+      async function login() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        if (!email || !password) {
+          showMessage('loginMessage', 'Пожалуйста, заполните все поля', false);
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE}/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              login: email,
+              password
+            })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage('loginMessage', `Вход выполнен! Добро пожаловать, ${data.user.login}!`);
+
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+          } else {
+            showMessage('loginMessage', data.message || 'Ошибка входа', false);
+          }
+        } catch (error) {
+          showMessage('loginMessage', 'Ошибка соединения с сервером', false);
+          console.error('Login error:', error);
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+
+        document.getElementById('registerForm').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            register();
+          }
+        });
+
+        document.getElementById('loginForm').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            login();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

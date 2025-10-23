@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const login_dto_1 = require("./dto/login.dto");
+const register_dto_1 = require("./dto/register.dto");
 const auth_service_1 = require("./auth.service");
 const swagger_1 = require("@nestjs/swagger");
 let AuthController = class AuthController {
@@ -24,16 +25,31 @@ let AuthController = class AuthController {
     }
     login(dto) {
         console.log('Call login endpoint', dto);
-        return this.authService.login(dto.login, dto.password);
+        const user = this.authService.login(dto.login, dto.password);
+        return {
+            message: 'Login successful',
+            user: user
+        };
     }
     register(dto) {
         console.log('Call register endpoint', dto);
-        return { message: 'ok' };
+        const result = this.authService.register(dto.email, dto.password, dto.firstName, dto.lastName, dto.gender, dto.age);
+        return result;
     }
 };
 exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Post)('login'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, swagger_1.ApiOperation)({ summary: 'Аутентификация пользователя' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Успешная аутентификация'
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 401,
+        description: 'Неверные учетные данные'
+    }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [login_dto_1.LoginDto]),
@@ -41,9 +57,26 @@ __decorate([
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.Post)('register'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Регистрация нового пользователя',
+        description: 'Создает нового пользователя с указанными данными'
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 201,
+        description: 'Пользователь успешно зарегистрирован'
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 409,
+        description: 'Пользователь с таким email уже существует'
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 400,
+        description: 'Ошибка валидации данных'
+    }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "register", null);
 exports.AuthController = AuthController = __decorate([
